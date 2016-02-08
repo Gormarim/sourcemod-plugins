@@ -14,6 +14,8 @@ public Plugin myinfo =
 	url = ""
 };
 
+// Small change for branch testing
+
 enum EventType
 {
 	EventType_Gamemode = 0,
@@ -1298,10 +1300,3 @@ public int MenuHandler_Abort(Menu menu, MenuAction action, int param1, int param
 	
 	return;
 }
-		
-
-/********************************************
-			PLAYERS/EVENTS MISC
-********************************************/
-
-
