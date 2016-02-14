@@ -79,10 +79,10 @@ bool g_bMapIsCorrect;
 //float vecArenaCenter[3] = {ARENA_CENTRE_X, ARENA_CENTRE_Y, ARENA_CENTRE_Z};  <- only for circle arenas
 bool g_bGameStarted;
 bool g_bIsPlaying[MAXPLAYERS + 1];
-bool g_bManager;
 int g_playerCount;
 
-
+bool g_bManager;
+int event_id;
 
 //////////////////////////////
 //							//
@@ -113,13 +113,23 @@ public OnMapStart()
 	if (StrEqual("ffa_community", MapName, false))
 	{
 		if (g_bManager)
-			RegEvent("ex2_start", "Weakestling");
+		{
+			RegPlugin();
+			event_id = RegEvent(EventType_Event, "Weakestling");
+			SetEventMainCmd(event_id, "ex2_start");
+		}
+			
 		g_bMapIsCorrect = true;
 	}
 	else
 	{
 		g_bMapIsCorrect = false;
 	}
+}
+
+public OnMapEnd()
+{
+	UnloadPlugin();
 }
 
 //////////////////////
@@ -133,7 +143,7 @@ public Action:Start(client, args)
 	if (g_bMapIsCorrect && !g_bGameStarted)
 	{
 		if (g_bManager)
-			StartEvent();
+			StartEvent(event_id);
 		g_playerCount = 0;
 		for (int i = 1; i < MaxClients; i++)
 		{
@@ -151,7 +161,7 @@ public Action:Start(client, args)
 						&& (vecPosition[1] <= 480.0) && (vecPosition[1] >= -224.0)
 						&& (vecPosition[0] <= 1824.0) && (vecPosition[0] >= 800.0))
 					{
-						if (!g_bManager || (g_bManager && GrabPlayer(i, EventType_Event)))
+						if (!g_bManager || (g_bManager && GrabPlayer(event_id, i)))
 						{
 							g_bIsPlaying[i] = true;
 							SDKHook(i, SDKHook_OnTakeDamage, OnTakeDamage);
@@ -171,7 +181,7 @@ public Action:Start(client, args)
 		else
 		{
 			if (g_bManager)
-				EndEvent();
+				EndEvent(event_id);
 			PrintToChat(client, "\x03[EX2]\x01 Not enough players on the Arena!");
 		}
 	}
@@ -237,7 +247,7 @@ NextRound(client)
 	//client - player who died first
 	g_bIsPlaying[client] = false;
 	if (g_bManager)
-		FreePlayer(client, EventType_Event);
+		FreePlayer(event_id, client);
 	g_playerCount--;
 	SDKUnhook(client, SDKHook_OnTakeDamage, OnTakeDamage);
 	
@@ -274,7 +284,7 @@ NextRound(client)
 		}
 		
 		if (g_bManager)
-			EndEvent();
+			EndEvent(event_id);
 		RemoveWalls();
 	}
 	

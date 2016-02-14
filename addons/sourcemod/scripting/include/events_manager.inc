@@ -35,9 +35,9 @@ native bool:EndEvent(id);
 
 native bool:IsPlayerFree(client);
 
-native bool:GrabPlayer(client, id);
+native bool:GrabPlayer(id, client);
 
-native bool:FreePlayer(client, id);
+native bool:FreePlayer(id, client);
 
 native bool:FreeAllPlayers(id);
 
