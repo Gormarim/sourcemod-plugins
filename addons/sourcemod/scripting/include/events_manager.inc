@@ -6,8 +6,7 @@
 enum EventType
 {
 	EventType_Gamemode = 0,
-	EventType_Event,
-	EventType_PlainEvent
+	EventType_Event
 };
 
 forward OnPlayerFree(client);
@@ -16,47 +15,37 @@ forward OnPlayerBusy(client);
 
 native bool:RegPlugin();
 
-native bool:UnloadPlugin();
+native UnloadPlugin();
 
-native bool:RegGamemode(const String:start_command[], const String:display_name[], const String:info[] = "", id = 0);
+native RegEvent(EventType:type, const String:name[] = "");
 
-native bool:RegEvent(const String:start_command[], const String:display_name[], const String:info[] = "", id = 0);
+native bool:SetEventName(id, const String:name[]);
 
-native bool:RegPlainEvent(id = 0);
+native bool:SetEventMainCmd(id, const String:cmd[]);
 
-native bool:RegGamemodeConVar(char[] str_convar, id = 0);
+native bool:SetEventInfoCmd(id, const String:cmd[]);
 
-native bool:RegEventConVar(char[] str_convar, id = 0);
-
-native bool:StartEvent(id = 0);
-
-native bool:EndEvent(id = 0);
-
-native bool:StartPlainEvent(id = 0);
-
-native bool:EndPlainEvent(id = 0);
+native bool:RegEventConVar(id, const String:name[], const String:description[]);
 
 functag public StartGamemodeCB();
 
-native bool:StartGamemode(StartGamemodeCB:callback, id = 0);
+native bool:StartEvent(id, StartGamemodeCB:callback = INVALID_FUNCTION);
 
-native bool:EndGamemode(id = 0);
+native bool:EndEvent(id);
 
 native bool:IsPlayerFree(client);
 
-native bool:GrabPlayer(client, EventType:type, id = 0);
+native bool:GrabPlayer(client, id);
 
-native bool:FreePlayer(client, EventType:type, id = 0);
+native bool:FreePlayer(client, id);
 
-native bool:FreeAllPlayers(EventType:type, id = 0);
+native bool:FreeAllPlayers(id);
 
-forward __EMCheckStatus();
+native EMValid();
 
-native __EMValid();
-
-public __EMCheckStatus()
+public EMCheckStatus()
 {
-	__EMValid();
+	EMValid();
 }
 
 public SharedPlugin:__pl_events_manager =
@@ -90,6 +79,6 @@ public __pl_events_manager_SetNTVOptional()
 	MarkNativeAsOptional("GrabPlayer");
 	MarkNativeAsOptional("FreePlayer");
 	MarkNativeAsOptional("FreeAllPlayers");
-	MarkNativeAsOptional("__EMValid");
+	MarkNativeAsOptional("EMValid");
 }
 #endif
